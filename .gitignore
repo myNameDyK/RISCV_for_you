@@ -1,9 +1,13 @@
+# Vivado generated
 Final_RISCV.cache/
-Final_RISCV.hw/
 Final_RISCV.sim/
+Final_RISCV.hw/
 Final_RISCV.ip_user_files/
 
+# Logs
 *.log
 *.jou
-*.str
-*.tmp
+
+# OS junk
+.DS_Store
+Thumbs.db
