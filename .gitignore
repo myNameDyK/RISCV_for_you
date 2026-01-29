@@ -1,0 +1,9 @@
+Final_RISCV.cache/
+Final_RISCV.hw/
+Final_RISCV.sim/
+Final_RISCV.ip_user_files/
+
+*.log
+*.jou
+*.str
+*.tmp
