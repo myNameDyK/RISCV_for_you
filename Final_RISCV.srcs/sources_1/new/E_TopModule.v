@@ -24,48 +24,48 @@
 //==================================================
 module Execute_TopModule (
     // ===== Clock & reset =====
-    input  wire        clk,
-    input  wire        rst,
+    input clk,
+    input rst,
 
     // ===== Control từ ID/EX =====
-    input  wire        RegWriteE,
-    input  wire [1:0]  ResultSrcE,
-    input  wire        MemWriteE,
-    input  wire        ALUSrcE,
-    input  wire [3:0]  ALUControlE,
-    input  wire        BranchE,
-    input  wire        JumpE,
-    input  wire        JalrE,
+    input RegWriteE,
+    input [1:0] ResultSrcE,
+    input MemWriteE,
+    input ALUSrcE,
+    input [3:0] ALUControlE,
+    input BranchE,
+    input JumpE,
+    input JalrE,
 
     // ===== Data từ ID/EX =====
-    input  wire [31:0] RD1E,
-    input  wire [31:0] RD2E,
-    input  wire [31:0] ImmExtE,
-    input  wire [31:0] PCE,
-    input  wire [31:0] PCPlus4E,
-    input  wire [4:0]  RdE,
-    input  wire [2:0]  Funct3E,
+    input [31:0] RD1E,
+    input [31:0] RD2E,
+    input [31:0] ImmExtE,
+    input [31:0] PCE,
+    input [31:0] PCPlus4E,
+    input [4:0] RdE,
+    input [2:0] funct3E,
 
     // ===== Forward control =====
-    input  wire [1:0]  ForwardAE,
-    input  wire [1:0]  ForwardBE,
+    input [1:0] ForwardAE,
+    input [1:0] ForwardBE,
 
     // ===== Forward data =====
-    input  wire [31:0] ALUResultM,
-    input  wire [31:0] ResultW,
+    input [31:0] ALUResultM,
+    input [31:0] ResultW,
 
     // ===== Output sang IF =====
-    output wire        PCSrcE,
-    output wire [31:0] PCTargetE,
+    output PCSrcE,
+    output [31:0] PCTargetE,
 
     // ===== Output sang MEM =====
-    output wire        RegWriteM,
-    output wire [1:0]  ResultSrcM,
-    output wire        MemWriteM,
-    output wire [31:0] ALUResultM_out,
-    output wire [31:0] WriteDataM,
-    output wire [4:0]  RdM,
-    output wire [31:0] PCPlus4M
+    output RegWriteM,
+    output [1:0] ResultSrcM,
+    output MemWriteM,
+    output [31:0] ALUResultM_out,
+    output [31:0] WriteDataM,
+    output [4:0] RdM,
+    output [31:0] PCPlus4M
 );
 
     // ===== Internal wires =====
@@ -94,10 +94,10 @@ module Execute_TopModule (
 
     // ===== ALU SrcB mux =====
     E_Mux alu_src_mux (
-        .ALUSrcE   (ALUSrcE),
-        .MuxSrcBE  (MuxSrcBE),
-        .ImmExtE   (ImmExtE),
-        .SrcBE     (SrcBE)
+        .ALUSrcE     (ALUSrcE),
+        .MuxSrcBE    (MuxSrcBE),
+        .ImmExtE     (ImmExtE),
+        .SrcBE       (SrcBE)
     );
 
     // ===== ALU =====
@@ -110,29 +110,28 @@ module Execute_TopModule (
 
     // ===== Branch decision =====
     Branch_Unit branch_unit (
-        .SrcAE    (SrcAE),
-        .SrcBE    (MuxSrcBE),
-        .Funct3E  (Funct3E),
-        .BranchE  (BranchE),
-        .JumpE    (JumpE),
-        .PCSrcE   (PCSrcE)
+        .SrcAE       (SrcAE),
+        .SrcBE       (MuxSrcBE),
+        .funct3E     (funct3E),
+        .BranchE     (BranchE),
+        .JumpE       (JumpE),
+        .PCSrcE      (PCSrcE)
     );
 
     // ===== PC target =====
     PC_Target_Unit pc_target (
-        .PCE        (PCE),
-        .SrcAE      (SrcAE),
-        .ImmExtE    (ImmExtE),
-        .JumpE      (JumpE),
-        .JalrE      (JalrE),
-        .PCTargetE  (PCTargetE)
+        .PCE         (PCE),
+        .SrcAE       (SrcAE),
+        .ImmExtE     (ImmExtE),
+        .JumpE       (JumpE),
+        .JalrE       (JalrE),
+        .PCTargetE   (PCTargetE)
     );
 
     // ===== EX/MEM register =====
     Execute_Stage_Register ex_mem (
-        .clk          (clk),
-        .rst          (rst),
-
+        .clk         (clk),
+        .rst         (rst),
         .RegWriteE   (RegWriteE),
         .ResultSrcE  (ResultSrcE),
         .MemWriteE   (MemWriteE),
@@ -140,7 +139,6 @@ module Execute_TopModule (
         .WriteDataE  (MuxSrcBE),
         .RdE         (RdE),
         .PCPlus4E    (PCPlus4E),
-
         .RegWriteM   (RegWriteM),
         .ResultSrcM  (ResultSrcM),
         .MemWriteM   (MemWriteM),
@@ -153,36 +151,31 @@ module Execute_TopModule (
 endmodule
 
 
-
-
-
-
-
 module Execute_Stage_Register (
-    input  wire        clk,
-    input  wire        rst,
+    //======input signal for control =======
+    input rst,
+    input clk,
 
-    // Control in
-    input  wire        RegWriteE,
-    input  wire [1:0]  ResultSrcE,
-    input  wire        MemWriteE,
+    input RegWriteE,
+    input [1:0] ResultSrcE,
+    input MemWriteE,
 
-    // Data in
-    input  wire [31:0] ALUResultE,
-    input  wire [31:0] WriteDataE,
-    input  wire [4:0]  RdE,
-    input  wire [31:0] PCPlus4E,
+    // data signals in
+    input [31:0] ALUResultE,
+    input [31:0] WriteDataE,
+    input [4:0] RdE,
+    input [31:0] PCPlus4E,
 
-    // Control out
-    output reg         RegWriteM,
-    output reg  [1:0]  ResultSrcM,
-    output reg         MemWriteM,
+    // control signals out
+    output reg RegWriteM,
+    output reg [1:0] ResultSrcM,
+    output reg MemWriteM,
 
-    // Data out
-    output reg  [31:0] ALUResultM,
-    output reg  [31:0] WriteDataM,
-    output reg  [4:0]  RdM,
-    output reg  [31:0] PCPlus4M
+    // data signals out
+    output reg [31:0] ALUResultM,
+    output reg [31:0] WriteDataM,
+    output reg [4:0] RdM,
+    output reg [31:0] PCPlus4M
 );
 
     always @(posedge clk or posedge rst) begin
@@ -208,25 +201,142 @@ module Execute_Stage_Register (
 endmodule
 
 
-
-
-
-
-
-
-
 module PC_Target_Unit (
-    input  wire [31:0] PCE,
-    input  wire [31:0] SrcAE,
-    input  wire [31:0] ImmExtE,
-    input  wire        JumpE,
-    input  wire        JalrE,
-    output wire [31:0] PCTargetE
+    input [31:0] PCE,
+    input [31:0] SrcAE,
+    input [31:0] ImmExtE,
+    input JumpE,
+    input JalrE,
+    output [31:0] PCTargetE
 );
+
     assign PCTargetE = JalrE ?
                        ((SrcAE + ImmExtE) & 32'hFFFFFFFE) :
                        (PCE + ImmExtE);
+
 endmodule
+
+
+module Branch_Unit (
+    input [31:0] SrcAE,
+    input [31:0] SrcBE,
+    input [2:0] Funct3E,
+    input BranchE,
+    input JumpE,
+    output PCSrcE
+);
+
+    reg take_branch;
+
+    always @(*) begin
+        take_branch = 1'b0;
+        if (BranchE) begin
+            case (Funct3E)
+                3'b000: take_branch = (SrcAE == SrcBE);                  // BEQ
+                3'b001: take_branch = (SrcAE != SrcBE);                  // BNE
+                3'b100: take_branch = ($signed(SrcAE) < $signed(SrcBE)); // BLT
+                3'b101: take_branch = ($signed(SrcAE) >= $signed(SrcBE));// BGE
+                3'b110: take_branch = (SrcAE < SrcBE);                   // BLTU
+                3'b111: take_branch = (SrcAE >= SrcBE);                  // BGEU
+            endcase
+        end
+    end
+
+    assign PCSrcE = JumpE | take_branch;
+
+endmodule
+
+
+module E_Mux (
+    input ALUSrcE,
+    input [31:0] MuxSrcBE,
+    input [31:0] ImmExtE,
+    output [31:0] SrcBE
+);
+
+    assign SrcBE = (ALUSrcE) ? ImmExtE : MuxSrcBE;
+
+endmodule
+
+
+module E_ForwardAE_Mux (
+    input [1:0] ForwardAE,
+    input [31:0] RD1E,
+    input [31:0] ResultW,
+    input [31:0] ALUResultM,
+    output [31:0] SrcAE
+);
+
+    localparam RD        = 2'b00;
+    localparam RESULTW   = 2'b01;
+    localparam ALUResult = 2'b10;
+
+    assign SrcAE =
+        (ForwardAE == RD)        ? RD1E :
+        (ForwardAE == RESULTW)   ? ResultW :
+        (ForwardAE == ALUResult) ? ALUResultM :
+                                   32'b0;
+
+endmodule
+
+
+module E_ForwardBE_Mux (
+    input [1:0] ForwardBE,
+    input [31:0] RD2E,
+    input [31:0] ResultW,
+    input [31:0] ALUResultM,
+    output [31:0] MuxSrcBE
+);
+
+    localparam RD        = 2'b00;
+    localparam RESULTW   = 2'b01;
+    localparam ALUResult = 2'b10;
+
+    assign MuxSrcBE =
+        (ForwardBE == RD)        ? RD2E :
+        (ForwardBE == RESULTW)   ? ResultW :
+        (ForwardBE == ALUResult) ? ALUResultM :
+                                   32'b0;
+
+endmodule
+
+
+module E_ALU (
+    input [3:0] ALUControlE,
+    input [31:0] SrcAE,
+    input [31:0] SrcBE,
+    output reg [31:0] ALUResultE
+);
+
+    localparam aluADD  = 4'b0000;
+    localparam aluSUB  = 4'b0001;
+    localparam aluAND  = 4'b0010;
+    localparam aluOR   = 4'b0011;
+    localparam aluXOR  = 4'b0100;
+    localparam aluSLT  = 4'b1000;
+    localparam aluSLTU = 4'b1001;
+    localparam aluSLL  = 4'b0101;
+    localparam aluSRL  = 4'b0110;
+    localparam aluSRA  = 4'b0111;
+
+    always @(*) begin
+        ALUResultE = 32'b0;
+        case (ALUControlE)
+            aluADD:  ALUResultE = SrcAE + SrcBE;
+            aluSUB:  ALUResultE = SrcAE - SrcBE;
+            aluAND:  ALUResultE = SrcAE & SrcBE;
+            aluOR :  ALUResultE = SrcAE | SrcBE;
+            aluXOR:  ALUResultE = SrcAE ^ SrcBE;
+            aluSLTU: ALUResultE = (SrcAE < SrcBE) ? 32'b1 : 32'b0;
+            aluSLT : ALUResultE = ($signed(SrcAE) < $signed(SrcBE)) ? 32'b1 : 32'b0;
+            aluSLL:  ALUResultE = SrcAE << SrcBE[4:0];
+            aluSRL:  ALUResultE = SrcAE >> SrcBE[4:0];
+            aluSRA:  ALUResultE = $signed(SrcAE) >>> SrcBE[4:0];
+        endcase
+    end
+
+endmodule
+
 
 
 
